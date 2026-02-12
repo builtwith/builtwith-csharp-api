@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.builtwith.com)",
+      "mcp__claude_ai_BuiltWith__free-api",
+      "mcp__claude_ai_BuiltWith__trust-api",
+      "mcp__claude_ai_BuiltWith__recommendations-api",
+      "mcp__claude_ai_BuiltWith__keywords-api",
+      "mcp__claude_ai_BuiltWith__relationships-api",
+      "mcp__claude_ai_BuiltWith__redirects-api",
+      "mcp__claude_ai_BuiltWith__trends-api",
+      "mcp__claude_ai_BuiltWith__company-to-url",
+      "mcp__claude_ai_BuiltWith__tags-api",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet build:*)"
+    ]
+  }
+}

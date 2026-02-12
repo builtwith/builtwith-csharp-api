@@ -1,19 +1,22 @@
 # BuiltWith C# Client SDK
 
-Provides a C# client SDK providing functions to access the BuiltWith API. ![.NET Core](https://github.com/builtwith/BuiltWith-C-Client-API/workflows/.NET%20Core/badge.svg?branch=master)
+C# client SDK for the [BuiltWith API](https://api.builtwith.com). ![.NET](https://github.com/builtwith/BuiltWith-C-Client-API/workflows/.NET/badge.svg?branch=master)
 
 ## Getting Started
 
+```csharp
+using var client = new BuiltWith.BuiltWithClient("YOUR_API_KEY");
+
+// Domain API - get technologies used on a domain
+var domain = await client.GetDomainAsync("example.com");
+
+// Free API - get technology group summary
+var free = await client.GetFreeAsync("example.com");
 ```
-BuiltWith.BuiltWithClient.Init ( "YOUR_API_KEY" );
-BuiltWith.Objects.v14.DomainAPI domain = BuiltWith.BuiltWithClient.GetDomain ( "example.com" );
-```
 
-Get your API key by creating a free account at BuiltWith and visiting https://api.builtwith.com
+Get your API key by creating a free account at [api.builtwith.com](https://api.builtwith.com).
 
-### Installing
-
-Download and build or 
+## Installing
 
 ```
 dotnet add package BuiltWith
@@ -21,25 +24,176 @@ dotnet add package BuiltWith
 
 https://www.nuget.org/packages/BuiltWith/
 
-
 ## Supported Endpoints
 
-- [x] [Domain API](https://api.builtwith.com/domain-api)
-- [ ] [Free API](https://api.builtwith.com/free-api)
-- [ ] [Lists API](https://api.builtwith.com/lists-api)
-- [ ] [Relationships API](https://api.builtwith.com/relationships-api)
-- [ ] [Keywords API](https://api.builtwith.com/keywords-api)
-- [ ] [Trends API](https://api.builtwith.com/trends-api)
-- [ ] [Company to URL API](https://api.builtwith.com/company-to-url)
+- [x] [Domain API](https://api.builtwith.com/domain-api) - Technology detection for domains (v22)
+- [x] [Free API](https://api.builtwith.com/free-api) - Free technology group summary
+- [x] [Lists API](https://api.builtwith.com/lists-api) - Find sites using a technology
+- [x] [Relationships API](https://api.builtwith.com/relationships-api) - Domain relationship mapping
+- [x] [Keywords API](https://api.builtwith.com/keywords-api) - Domain keyword extraction
+- [x] [Trends API](https://api.builtwith.com/trends-api) - Technology adoption trends
+- [x] [Company to URL API](https://api.builtwith.com/company-to-url) - Map company names to domains
+- [x] [Tags API](https://api.builtwith.com/tag-api) - IP and attribute lookups
+- [x] [Redirects API](https://api.builtwith.com/redirect-api) - Domain redirect tracking
+- [x] [Trust API](https://api.builtwith.com/trust-api) - Trust and fraud signals
+- [x] [Recommendations API](https://api.builtwith.com/recommendations-api) - Technology recommendations
+- [x] [Product API](https://api.builtwith.com/product-api) - E-commerce product search
+
+## Usage Examples
+
+### Domain API
+
+```csharp
+using var client = new BuiltWith.BuiltWithClient("YOUR_API_KEY");
+
+// Single domain
+var result = await client.GetDomainAsync("shopify.com");
+foreach (var tech in result.Results[0].Result.Paths[0].Technologies)
+{
+    Console.WriteLine($"{tech.Name} ({tech.Tag})");
+}
+
+// Multiple domains (max 16)
+var multi = await client.GetDomainAsync(new[] { "shopify.com", "builtwith.com" });
+```
+
+### Lists API
+
+```csharp
+// Find sites using Shopify
+var list = await client.GetListsAsync("Shopify");
+foreach (var site in list.Results)
+{
+    Console.WriteLine(site.Domain);
+}
+
+// Paginate with offset
+var next = await client.GetListsAsync("Shopify", list.NextOffset);
+```
+
+### Relationships API
+
+```csharp
+var rel = await client.GetRelationshipsAsync("builtwith.com");
+foreach (var r in rel.Relationships)
+{
+    foreach (var id in r.Identifiers)
+    {
+        Console.WriteLine($"{id.Type}: {id.Value} ({id.Matches?.Length} matches)");
+    }
+}
+```
+
+### Company to URL API
+
+```csharp
+var companies = await client.GetCompanyToUrlAsync("BuiltWith");
+foreach (var c in companies)
+{
+    Console.WriteLine($"{c.Domain} - {c.CompanyName} ({c.Country})");
+}
+```
+
+### Trends API
+
+```csharp
+var trends = await client.GetTrendsAsync("Shopify");
+Console.WriteLine($"{trends.Tech.Name}: {trends.Tech.Coverage.Live} live sites");
+```
+
+### Trust API
+
+```csharp
+var trust = await client.GetTrustAsync("example.com");
+Console.WriteLine($"Spend: {trust.DBRecord?.Spend}, Parked: {trust.DBRecord?.Parked}");
+```
+
+### Redirects API
+
+```csharp
+var redirects = await client.GetRedirectsAsync("builtwith.com");
+Console.WriteLine($"Inbound: {redirects.Inbound?.Length}, Outbound: {redirects.Outbound?.Length}");
+```
+
+### Tags API
+
+```csharp
+var tags = await client.GetTagsAsync("IP-104.18.44.82");
+foreach (var tag in tags)
+{
+    Console.WriteLine($"{tag.Value}: {tag.Matches?.Length} domains");
+}
+```
+
+### Product API
+
+```csharp
+var products = await client.GetProductAsync("bluetooth speaker");
+foreach (var shop in products.Shops)
+{
+    foreach (var p in shop.Products)
+    {
+        Console.WriteLine($"{p.Title} - ${p.Price} at {shop.Domain}");
+    }
+}
+```
+
+### Recommendations API
+
+```csharp
+var recs = await client.GetRecommendationsAsync("builtwith.com");
+foreach (var r in recs[0].Recommendations)
+{
+    Console.WriteLine($"{r.Name} ({r.Tag}) - {r.Stars} stars, {r.Match:P0} match");
+}
+```
+
+### Keywords API
+
+```csharp
+var kw = await client.GetKeywordsAsync("builtwith.com");
+Console.WriteLine(string.Join(", ", kw.Keywords[0].Keywords));
+```
+
+### Synchronous Usage
+
+All async methods have synchronous counterparts:
+
+```csharp
+var domain = client.GetDomain("example.com");
+var free = client.GetFree("example.com");
+var trust = client.GetTrust("example.com");
+```
+
+### Custom HttpClient
+
+```csharp
+var httpClient = new HttpClient();
+httpClient.Timeout = TimeSpan.FromSeconds(60);
+
+using var client = new BuiltWith.BuiltWithClient("YOUR_API_KEY", httpClient);
+```
 
 ## Dependencies
 
-* .NETStandard 2.0
-* Newtonsoft.Json (>= 12.0.3)
+* .NET 8.0 / .NET Standard 2.0
+* System.Text.Json
 
+## Migrating from v1
+
+v2 is a complete rewrite. Key changes:
+
+- **Instance-based client** - Use `new BuiltWithClient(key)` instead of `BuiltWithClient.Init(key)` + static methods
+- **IDisposable** - Wrap in `using` statement
+- **Async-first** - All methods have `Async` variants with `CancellationToken` support
+- **System.Text.Json** - Replaced Newtonsoft.Json
+- **Domain API v22** - Updated from v14
+- **All endpoints** - Full coverage of the BuiltWith API
 
 ## Licence
+
 MIT
 
 ## Authors
+
 Gary Brewer

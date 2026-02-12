@@ -1,34 +1,31 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <ApplicationIcon />
-    <Win32Resource />
-    <UserSecretsId>70b08464-4670-4cc2-8c77-da2837b41e1f</UserSecretsId>
+    <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Gary Brewer</Authors>
     <Company>BuiltWith Pty Ltd</Company>
-    <Description>REST Client SDK for the BuiltWith.com API</Description>
+    <Description>C# client SDK for the BuiltWith API - technology lookup, domain intelligence, and more.</Description>
     <Copyright>Copyright (c) BuiltWith Pty Ltd</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/builtwith/BuiltWith-C-Client-API</PackageProjectUrl>
     <PackageIcon>newLogoSquare.png</PackageIcon>
-    <PackageIconUrl />
     <RepositoryUrl>https://github.com/builtwith/BuiltWith-C-Client-API</RepositoryUrl>
-    <FileVersion>1.0.0.1</FileVersion>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <Version>1.0.1</Version>
+    <Version>2.0.0</Version>
+    <FileVersion>2.0.0.0</FileVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="newLogoSquare.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
+    <None Include="newLogoSquare.png" Pack="true" PackagePath="" />
+    <None Include="..\README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
