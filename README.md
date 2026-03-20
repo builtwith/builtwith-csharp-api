@@ -38,6 +38,7 @@ https://www.nuget.org/packages/BuiltWith/
 - [x] [Trust API](https://api.builtwith.com/trust-api) - Trust and fraud signals
 - [x] [Recommendations API](https://api.builtwith.com/recommendations-api) - Technology recommendations
 - [x] [Product API](https://api.builtwith.com/product-api) - E-commerce product search
+- [x] [Vector Search API](https://api.builtwith.com/vector-api) - Semantic technology and category search
 
 ## Usage Examples
 
@@ -153,6 +154,19 @@ foreach (var r in recs[0].Recommendations)
 ```csharp
 var kw = await client.GetKeywordsAsync("builtwith.com");
 Console.WriteLine(string.Join(", ", kw.Keywords[0].Keywords));
+```
+
+### Vector Search API
+
+```csharp
+var results = await client.GetVectorSearchAsync("react framework");
+foreach (var r in results.Results)
+{
+    Console.WriteLine($"{r.Name} ({r.Type}) - score: {r.Score:F2}");
+}
+
+// With limit
+var limited = await client.GetVectorSearchAsync("ecommerce platform", limit: 5);
 ```
 
 ### Synchronous Usage
