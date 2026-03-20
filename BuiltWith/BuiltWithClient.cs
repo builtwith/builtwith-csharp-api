@@ -287,6 +287,25 @@ namespace BuiltWith
 
         #endregion
 
+        #region Vector Search API
+
+        /// <summary>
+        /// Search for technologies and categories using semantic similarity.
+        /// https://api.builtwith.com/vector-api
+        /// </summary>
+        public async Task<VectorSearchResponse> GetVectorSearchAsync(string query, int? limit = null, CancellationToken cancellationToken = default)
+        {
+            var url = BuildUrl("/vector/v1/api.json", ("QUERY", query));
+            if (limit.HasValue)
+                url += "&LIMIT=" + limit.Value;
+            return await GetAsync<VectorSearchResponse>(url, cancellationToken).ConfigureAwait(false);
+        }
+
+        public VectorSearchResponse GetVectorSearch(string query, int? limit = null) =>
+            GetVectorSearchAsync(query, limit).GetAwaiter().GetResult();
+
+        #endregion
+
         #region Utility Endpoints
 
         /// <summary>
