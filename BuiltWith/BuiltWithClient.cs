@@ -306,6 +306,27 @@ namespace BuiltWith
 
         #endregion
 
+        #region Keyword Search API
+
+        /// <summary>
+        /// Find websites containing a specific keyword.
+        /// https://api.builtwith.com/keyword-search-api
+        /// </summary>
+        public async Task<KeywordSearchResponse> GetKeywordSearchAsync(string keyword, int? limit = null, string? offset = null, CancellationToken cancellationToken = default)
+        {
+            var url = BuildUrl("/kws1/api.json", ("KEYWORD", keyword));
+            if (limit.HasValue)
+                url += "&LIMIT=" + limit.Value;
+            if (!string.IsNullOrEmpty(offset))
+                url += "&OFFSET=" + WebUtility.UrlEncode(offset);
+            return await GetAsync<KeywordSearchResponse>(url, cancellationToken).ConfigureAwait(false);
+        }
+
+        public KeywordSearchResponse GetKeywordSearch(string keyword, int? limit = null, string? offset = null) =>
+            GetKeywordSearchAsync(keyword, limit, offset).GetAwaiter().GetResult();
+
+        #endregion
+
         #region Utility Endpoints
 
         /// <summary>
