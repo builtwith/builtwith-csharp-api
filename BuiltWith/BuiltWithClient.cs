@@ -349,6 +349,64 @@ namespace BuiltWith
 
         #endregion
 
+        #region Agent Device-Code Authorization
+
+        /// <summary>
+        /// Start the Agent Device-Code Authorization flow. No API key required.
+        /// Returns a device_code and verification_uri. Direct the user to open the URI in their browser.
+        /// </summary>
+        public static async Task<AgentAuthStartResponse> AgentAuthStartAsync(HttpClient httpClient = null, CancellationToken cancellationToken = default)
+        {
+            bool ownsClient = httpClient == null;
+            httpClient ??= new HttpClient();
+            try
+            {
+                using var content = new System.Net.Http.StringContent("{}", System.Text.Encoding.UTF8, "application/json");
+                using var response = await httpClient.PostAsync(BaseUrl + "/agent-auth/start", content, cancellationToken).ConfigureAwait(false);
+                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonSerializer.Deserialize<AgentAuthStartResponse>(json, JsonOptions)!;
+            }
+            finally
+            {
+                if (ownsClient) httpClient.Dispose();
+            }
+        }
+
+        /// <summary>Synchronous wrapper for <see cref="AgentAuthStartAsync"/>.</summary>
+        public static AgentAuthStartResponse AgentAuthStart(HttpClient httpClient = null) =>
+            AgentAuthStartAsync(httpClient).GetAwaiter().GetResult();
+
+        /// <summary>
+        /// Poll for the result of an Agent Device-Code Authorization flow. No API key required.
+        /// Call every 5 seconds after AgentAuthStart. Returns status and, on approval, an access_token.
+        /// </summary>
+        public static async Task<AgentAuthTokenResponse> AgentAuthTokenAsync(string deviceCode, HttpClient httpClient = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(deviceCode))
+                throw new ArgumentException("deviceCode is required", nameof(deviceCode));
+
+            bool ownsClient = httpClient == null;
+            httpClient ??= new HttpClient();
+            try
+            {
+                var body = System.Text.Json.JsonSerializer.Serialize(new { device_code = deviceCode });
+                using var content = new System.Net.Http.StringContent(body, System.Text.Encoding.UTF8, "application/json");
+                using var response = await httpClient.PostAsync(BaseUrl + "/agent-auth/token", content, cancellationToken).ConfigureAwait(false);
+                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonSerializer.Deserialize<AgentAuthTokenResponse>(json, JsonOptions)!;
+            }
+            finally
+            {
+                if (ownsClient) httpClient.Dispose();
+            }
+        }
+
+        /// <summary>Synchronous wrapper for <see cref="AgentAuthTokenAsync"/>.</summary>
+        public static AgentAuthTokenResponse AgentAuthToken(string deviceCode, HttpClient httpClient = null) =>
+            AgentAuthTokenAsync(deviceCode, httpClient).GetAwaiter().GetResult();
+
+        #endregion
+
         #region Internals
 
         private string BuildUrl(string path, params (string key, string value)[] queryParams)
