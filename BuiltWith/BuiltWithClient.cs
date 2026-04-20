@@ -362,7 +362,7 @@ namespace BuiltWith
             try
             {
                 using var content = new System.Net.Http.StringContent("{}", System.Text.Encoding.UTF8, "application/json");
-                using var response = await httpClient.PostAsync(BaseUrl + "/agent-auth-start", content, cancellationToken).ConfigureAwait(false);
+                using var response = await httpClient.PostAsync(BaseUrl + "/agent-auth/start", content, cancellationToken).ConfigureAwait(false);
                 var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return JsonSerializer.Deserialize<AgentAuthStartResponse>(json, JsonOptions)!;
             }
@@ -391,7 +391,7 @@ namespace BuiltWith
             {
                 var body = System.Text.Json.JsonSerializer.Serialize(new { device_code = deviceCode });
                 using var content = new System.Net.Http.StringContent(body, System.Text.Encoding.UTF8, "application/json");
-                using var response = await httpClient.PostAsync(BaseUrl + "/agent-auth-token", content, cancellationToken).ConfigureAwait(false);
+                using var response = await httpClient.PostAsync(BaseUrl + "/agent-auth/token", content, cancellationToken).ConfigureAwait(false);
                 var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return JsonSerializer.Deserialize<AgentAuthTokenResponse>(json, JsonOptions)!;
             }
