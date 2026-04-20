@@ -39,6 +39,7 @@ https://www.nuget.org/packages/BuiltWith/
 - [x] [Recommendations API](https://api.builtwith.com/recommendations-api) - Technology recommendations
 - [x] [Product API](https://api.builtwith.com/product-api) - E-commerce product search
 - [x] [Vector Search API](https://api.builtwith.com/vector-api) - Semantic technology and category search
+- [x] Agent Device-Code Authorization - Obtain a temporary API token via browser approval (no API key required)
 
 ## Usage Examples
 
@@ -167,6 +168,38 @@ foreach (var r in results.Results)
 
 // With limit
 var limited = await client.GetVectorSearchAsync("ecommerce platform", limit: 5);
+```
+
+### Agent Device-Code Authorization
+
+Obtain a temporary `bw-` prefixed API token via browser approval. These are **static methods** — no `BuiltWithClient` instance or API key required.
+
+```csharp
+// Step 1: start the flow
+var start = await BuiltWithClient.AgentAuthStartAsync();
+// start.VerificationUri => URL to open in browser
+// start.DeviceCode      => code to poll with
+
+Console.WriteLine($"Open in browser: {start.VerificationUri}");
+
+// Step 2: poll every 5 seconds
+AgentAuthTokenResponse token;
+do {
+    await Task.Delay(5000);
+    token = await BuiltWithClient.AgentAuthTokenAsync(start.DeviceCode);
+} while (token.Status == "pending");
+
+if (token.Status == "approved") {
+    using var client = new BuiltWithClient(token.AccessToken);
+    // use client normally
+}
+```
+
+Synchronous equivalents are also available:
+
+```csharp
+var start = BuiltWithClient.AgentAuthStart();
+var token = BuiltWithClient.AgentAuthToken(start.DeviceCode);
 ```
 
 ### Synchronous Usage
