@@ -93,6 +93,42 @@ namespace BuiltWith
 
         #endregion
 
+        #region Change API
+
+        /// <summary>
+        /// Get technology additions and removals for a domain.
+        /// https://api.builtwith.com/change-api
+        /// </summary>
+        public async Task<ChangeApiResponse> GetChangeAsync(string domain, string? since = null, CancellationToken cancellationToken = default)
+        {
+            var url = BuildUrl("/change1/api.json", ("LOOKUP", domain));
+            if (!string.IsNullOrEmpty(since))
+                url += "&SINCE=" + WebUtility.UrlEncode(since);
+            return await GetAsync<ChangeApiResponse>(url, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get technology additions and removals for multiple domains.
+        /// </summary>
+        public async Task<ChangeApiResponse> GetChangeAsync(string[] domains, string? since = null, CancellationToken cancellationToken = default)
+        {
+            if (domains == null || domains.Length == 0)
+                throw new BuiltWithException("At least one domain is required.");
+
+            var url = BuildUrl("/change1/api.json", ("LOOKUP", string.Join(",", domains)));
+            if (!string.IsNullOrEmpty(since))
+                url += "&SINCE=" + WebUtility.UrlEncode(since);
+            return await GetAsync<ChangeApiResponse>(url, cancellationToken).ConfigureAwait(false);
+        }
+
+        public ChangeApiResponse GetChange(string domain, string? since = null) =>
+            GetChangeAsync(domain, since).GetAwaiter().GetResult();
+
+        public ChangeApiResponse GetChange(string[] domains, string? since = null) =>
+            GetChangeAsync(domains, since).GetAwaiter().GetResult();
+
+        #endregion
+
         #region Free API
 
         /// <summary>

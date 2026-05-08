@@ -27,6 +27,7 @@ https://www.nuget.org/packages/BuiltWith/
 ## Supported Endpoints
 
 - [x] [Domain API](https://api.builtwith.com/domain-api) - Technology detection for domains (v22)
+- [x] [Change API](https://api.builtwith.com/change-api) - Technology additions and removals
 - [x] [Free API](https://api.builtwith.com/free-api) - Free technology group summary
 - [x] [Lists API](https://api.builtwith.com/lists-api) - Find sites using a technology
 - [x] [Relationships API](https://api.builtwith.com/relationships-api) - Domain relationship mapping
@@ -57,6 +58,18 @@ foreach (var tech in result.Results[0].Result.Paths[0].Technologies)
 
 // Multiple domains (max 16)
 var multi = await client.GetDomainAsync(new[] { "shopify.com", "builtwith.com" });
+```
+
+### Change API
+
+```csharp
+var changes = await client.GetChangeAsync("builtwith.com", since: "last month");
+foreach (var item in changes.Results)
+{
+    Console.WriteLine(item.Changes?.Summary);
+}
+
+var multiChanges = await client.GetChangeAsync(new[] { "shopify.com", "builtwith.com" });
 ```
 
 ### Lists API
