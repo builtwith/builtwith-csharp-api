@@ -152,16 +152,14 @@ namespace BuiltWith
         /// Get a list of domains using a specific technology.
         /// https://api.builtwith.com/lists-api
         /// </summary>
-        public async Task<ListsApiResponse> GetListsAsync(string tech, string? offset = null, CancellationToken cancellationToken = default)
+        public async Task<ListsApiResponse> GetListsAsync(string tech, string? offset = null, CancellationToken cancellationToken = default, string? otherTechs = null)
         {
-            var url = BuildUrl("/lists12/api.json", ("TECH", tech));
-            if (!string.IsNullOrEmpty(offset))
-                url += "&OFFSET=" + WebUtility.UrlEncode(offset);
+            var url = BuildUrl("/lists12/api.json", ("TECH", tech), ("OTHERTECHS", otherTechs ?? ""), ("OFFSET", offset ?? ""));
             return await GetAsync<ListsApiResponse>(url, cancellationToken).ConfigureAwait(false);
         }
 
-        public ListsApiResponse GetLists(string tech, string? offset = null) =>
-            GetListsAsync(tech, offset).GetAwaiter().GetResult();
+        public ListsApiResponse GetLists(string tech, string? offset = null, string? otherTechs = null) =>
+            GetListsAsync(tech, offset, otherTechs: otherTechs).GetAwaiter().GetResult();
 
         #endregion
 
