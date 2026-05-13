@@ -78,6 +78,12 @@ var multiChanges = await client.GetChangeAsync(new[] { "shopify.com", "builtwith
 // Find sites using Shopify
 var list = await client.GetListsAsync("Shopify");
 var gaAndPixel = await client.GetListsAsync("Google-Analytics", otherTechs: "Meta-Pixel");
+var filtered = await client.GetListsAsync("Shopify", filters: new Dictionary<string, string>
+{
+    ["REVENUE"] = "100000|GT",
+    ["SPEND"] = "100|GTE",
+    ["EMPLOYEES"] = "50|GTE"
+});
 foreach (var site in list.Results)
 {
     Console.WriteLine(site.Domain);

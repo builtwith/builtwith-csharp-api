@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -152,14 +153,15 @@ namespace BuiltWith
         /// Get a list of domains using a specific technology.
         /// https://api.builtwith.com/lists-api
         /// </summary>
-        public async Task<ListsApiResponse> GetListsAsync(string tech, string? offset = null, CancellationToken cancellationToken = default, string? otherTechs = null)
+        public async Task<ListsApiResponse> GetListsAsync(string tech, string? offset = null, CancellationToken cancellationToken = default, string? otherTechs = null, IDictionary<string, string>? filters = null)
         {
             var url = BuildUrl("/lists12/api.json", ("TECH", tech), ("OTHERTECHS", otherTechs ?? ""), ("OFFSET", offset ?? ""));
+            url = AddQueryParams(url, filters);
             return await GetAsync<ListsApiResponse>(url, cancellationToken).ConfigureAwait(false);
         }
 
-        public ListsApiResponse GetLists(string tech, string? offset = null, string? otherTechs = null) =>
-            GetListsAsync(tech, offset, otherTechs: otherTechs).GetAwaiter().GetResult();
+        public ListsApiResponse GetLists(string tech, string? offset = null, string? otherTechs = null, IDictionary<string, string>? filters = null) =>
+            GetListsAsync(tech, offset, otherTechs: otherTechs, filters: filters).GetAwaiter().GetResult();
 
         #endregion
 
@@ -450,6 +452,19 @@ namespace BuiltWith
             {
                 if (!string.IsNullOrEmpty(value))
                     url += "&" + WebUtility.UrlEncode(key) + "=" + WebUtility.UrlEncode(value);
+            }
+            return url;
+        }
+
+        private static string AddQueryParams(string url, IDictionary<string, string>? queryParams)
+        {
+            if (queryParams == null)
+                return url;
+
+            foreach (var pair in queryParams)
+            {
+                if (!string.IsNullOrEmpty(pair.Key) && !string.IsNullOrEmpty(pair.Value))
+                    url += "&" + WebUtility.UrlEncode(pair.Key.ToUpperInvariant()) + "=" + WebUtility.UrlEncode(pair.Value);
             }
             return url;
         }
