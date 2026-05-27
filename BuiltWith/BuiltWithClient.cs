@@ -342,6 +342,29 @@ namespace BuiltWith
 
         #endregion
 
+        #region Ask API
+
+        /// <summary>
+        /// Natural language website list lookup.
+        /// Without COMMIT, returns a sample result (1 API credit).
+        /// With commit=true, runs a full report returning up to 1000 results ordered by sequence.
+        /// Paginate using nextOffset from the previous response's NextOffset; "END" means no more pages.
+        /// https://api.builtwith.com/ask-api
+        /// </summary>
+        public async Task<AskApiResponse> GetAskAsync(string query, bool commit = false, string? nextOffset = null, bool meta = false, CancellationToken cancellationToken = default)
+        {
+            var url = BuildUrl("/ask1/api.json", ("QUERY", query));
+            if (commit) url += "&COMMIT=true";
+            if (!string.IsNullOrEmpty(nextOffset)) url += "&NEXTOFFSET=" + WebUtility.UrlEncode(nextOffset);
+            if (meta) url += "&META=yes";
+            return await GetAsync<AskApiResponse>(url, cancellationToken).ConfigureAwait(false);
+        }
+
+        public AskApiResponse GetAsk(string query, bool commit = false, string? nextOffset = null, bool meta = false) =>
+            GetAskAsync(query, commit, nextOffset, meta).GetAwaiter().GetResult();
+
+        #endregion
+
         #region Keyword Search API
 
         /// <summary>
