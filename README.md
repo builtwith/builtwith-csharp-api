@@ -40,6 +40,7 @@ https://www.nuget.org/packages/BuiltWith/
 - [x] [Recommendations API](https://api.builtwith.com/recommendations-api) - Technology recommendations
 - [x] [Product API](https://api.builtwith.com/product-api) - E-commerce product search
 - [x] [Vector Search API](https://api.builtwith.com/vector-api) - Semantic technology and category search
+- [x] [Ask API](https://api.builtwith.com/ask-api) - Natural language website list lookup
 - [x] Agent Device-Code Authorization - Obtain a temporary API token via browser approval (no API key required)
 
 ## Usage Examples
@@ -188,6 +189,26 @@ foreach (var r in results.Results)
 
 // With limit
 var limited = await client.GetVectorSearchAsync("ecommerce platform", limit: 5);
+```
+
+### Ask API
+
+Natural language website list lookup. Without `commit`, returns a sample (1 API credit). Set `commit: true` for a full report of up to 1,000 results. Paginate using `nextOffset` from the previous response; `"END"` means no more pages.
+
+```csharp
+// Quick sample
+var result = await client.GetAskAsync("Magento websites in Spain");
+Console.WriteLine(result.Explanation);
+foreach (var r in result.Results)
+{
+    Console.WriteLine($"{r.D} ({r.Country})");
+}
+
+// Full report
+var full = await client.GetAskAsync("Shopify stores in the US", commit: true);
+
+// Paginate
+var page2 = await client.GetAskAsync("Shopify stores in the US", commit: true, nextOffset: full.NextOffset);
 ```
 
 ### Agent Device-Code Authorization
