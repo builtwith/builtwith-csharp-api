@@ -26,7 +26,7 @@ https://www.nuget.org/packages/BuiltWith/
 
 ## Supported Endpoints
 
-- [x] [Domain API](https://api.builtwith.com/domain-api) - Technology detection for domains (v22)
+- [x] [Domain API](https://api.builtwith.com/domain-api) - Technology detection for domains (v23)
 - [x] [Change API](https://api.builtwith.com/change-api) - Technology additions and removals
 - [x] [Free API](https://api.builtwith.com/free-api) - Free technology group summary
 - [x] [Lists API](https://api.builtwith.com/lists-api) - Find sites using a technology
@@ -275,7 +275,7 @@ v2 is a complete rewrite. Key changes:
 - **IDisposable** - Wrap in `using` statement
 - **Async-first** - All methods have `Async` variants with `CancellationToken` support
 - **System.Text.Json** - Replaced Newtonsoft.Json
-- **Domain API v22** - Updated from v14
+- **Domain API v23** - Updated from v14
 - **All endpoints** - Full coverage of the BuiltWith API
 
 ## Licence

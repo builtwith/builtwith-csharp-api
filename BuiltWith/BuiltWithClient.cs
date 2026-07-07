@@ -54,7 +54,7 @@ namespace BuiltWith
             _ownsHttpClient = false;
         }
 
-        #region Domain API (v22)
+        #region Domain API (v23)
 
         /// <summary>
         /// Look up technology information for a single domain.
@@ -62,7 +62,7 @@ namespace BuiltWith
         /// </summary>
         public async Task<DomainApiResponse> GetDomainAsync(string domain, CancellationToken cancellationToken = default)
         {
-            var url = BuildUrl("/v22/api.json", ("LOOKUP", domain));
+            var url = BuildUrl("/v23/api.json", ("LOOKUP", domain));
             return await GetAsync<DomainApiResponse>(url, cancellationToken).ConfigureAwait(false);
         }
 
@@ -76,7 +76,7 @@ namespace BuiltWith
             if (domains.Length > 16)
                 throw new BuiltWithException("Maximum 16 domains at a time.");
 
-            var url = BuildUrl("/v22/api.json", ("LOOKUP", string.Join(",", domains)));
+            var url = BuildUrl("/v23/api.json", ("LOOKUP", string.Join(",", domains)));
             return await GetAsync<DomainApiResponse>(url, cancellationToken).ConfigureAwait(false);
         }
 
