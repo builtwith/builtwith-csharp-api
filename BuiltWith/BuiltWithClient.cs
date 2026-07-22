@@ -285,6 +285,36 @@ namespace BuiltWith
 
         #endregion
 
+        #region VAT API
+
+        /// <summary>
+        /// Get VAT, GST, and other publicly displayed company registration numbers for 1 to 16 comma-separated domains.
+        /// https://api.builtwith.com/vat-api
+        /// </summary>
+        public async Task<VatApiResult[]> GetVatAsync(string lookup, CancellationToken cancellationToken = default)
+        {
+            var url = BuildUrl("/vat1/api.json", ("LOOKUP", lookup));
+            return await GetAsync<VatApiResult[]>(url, cancellationToken).ConfigureAwait(false);
+        }
+
+        public VatApiResult[] GetVat(string lookup) =>
+            GetVatAsync(lookup).GetAwaiter().GetResult();
+
+        /// <summary>
+        /// List every company registration type the VAT API may return. No API key or credits required.
+        /// https://api.builtwith.com/vat-api
+        /// </summary>
+        public async Task<VatTypeResult[]> GetVatTypesAsync(CancellationToken cancellationToken = default)
+        {
+            var url = BuildUrl("/vat1/types.json");
+            return await GetAsync<VatTypeResult[]>(url, cancellationToken).ConfigureAwait(false);
+        }
+
+        public VatTypeResult[] GetVatTypes() =>
+            GetVatTypesAsync().GetAwaiter().GetResult();
+
+        #endregion
+
         #region Recommendations API
 
         /// <summary>
