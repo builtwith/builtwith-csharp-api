@@ -315,6 +315,26 @@ namespace BuiltWith
 
         #endregion
 
+        #region MCP Registry API
+
+        /// <summary>
+        /// Search and browse the BuiltWith MCP registry of other remote MCP servers BuiltWith has discovered.
+        /// Free; no API credits used; rate limited to 1 request per second per API key.
+        /// https://api.builtwith.com/mcp-api
+        /// </summary>
+        public async Task<McpRegistryResponse> GetMcpRegistryAsync(string? search = null, string? category = null, int? offset = null, CancellationToken cancellationToken = default)
+        {
+            var url = BuildUrl("/mcp1/api.json", ("SEARCH", search ?? ""), ("CATEGORY", category ?? ""));
+            if (offset.HasValue)
+                url += "&OFFSET=" + offset.Value;
+            return await GetAsync<McpRegistryResponse>(url, cancellationToken).ConfigureAwait(false);
+        }
+
+        public McpRegistryResponse GetMcpRegistry(string? search = null, string? category = null, int? offset = null) =>
+            GetMcpRegistryAsync(search, category, offset).GetAwaiter().GetResult();
+
+        #endregion
+
         #region Recommendations API
 
         /// <summary>
