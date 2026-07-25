@@ -38,7 +38,7 @@ https://www.nuget.org/packages/BuiltWith/
 - [x] [Redirects API](https://api.builtwith.com/redirect-api) - Domain redirect tracking
 - [x] [Trust API](https://api.builtwith.com/trust-api) - Trust and fraud signals
 - [x] [VAT API](https://api.builtwith.com/vat-api) - VAT, GST, and other company registration numbers
-- [x] [MCP API](https://api.builtwith.com/mcp-api) - Search and browse the BuiltWith MCP registry of discovered remote MCP servers
+- [x] [MCP API](https://api.builtwith.com/mcp-api) - Search and browse the BuiltWith MCP registry of discovered remote MCP servers (v1 & v2)
 - [x] [Recommendations API](https://api.builtwith.com/recommendations-api) - Technology recommendations
 - [x] [Product API](https://api.builtwith.com/product-api) - E-commerce product search
 - [x] [Vector Search API](https://api.builtwith.com/vector-api) - Semantic technology and category search
@@ -148,6 +148,15 @@ Console.WriteLine($"{vatTypes[0].Type}: {vatTypes[0].Description}");
 ```csharp
 var mcp = await client.GetMcpRegistryAsync(search: "payments");
 Console.WriteLine($"{mcp.Results?[0].Domain}: {mcp.Results?[0].Description}");
+```
+
+### MCP Registry API (v2)
+
+Adds per-endpoint `AuthRequired` flags and `FirstDetected`/`LastDetected` dates over v1.
+
+```csharp
+var mcpV2 = await client.GetMcpRegistryV2Async(search: "payments");
+Console.WriteLine($"{mcpV2[0].Domain}: {mcpV2[0].Endpoints?[0].AuthRequired}");
 ```
 
 ### Redirects API

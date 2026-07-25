@@ -333,6 +333,23 @@ namespace BuiltWith
         public McpRegistryResponse GetMcpRegistry(string? search = null, string? category = null, int? offset = null) =>
             GetMcpRegistryAsync(search, category, offset).GetAwaiter().GetResult();
 
+        /// <summary>
+        /// Search and browse the BuiltWith MCP registry (v2) of other remote MCP servers BuiltWith has discovered.
+        /// Adds per-endpoint AuthRequired flags and first_detected/last_detected dates over v1.
+        /// Free; no API credits used; rate limited to 1 request per second per API key.
+        /// https://api.builtwith.com/mcp-api
+        /// </summary>
+        public async Task<McpRegistryV2Result[]> GetMcpRegistryV2Async(string? search = null, string? category = null, int? offset = null, CancellationToken cancellationToken = default)
+        {
+            var url = BuildUrl("/mcp2/api.json", ("SEARCH", search ?? ""), ("CATEGORY", category ?? ""));
+            if (offset.HasValue)
+                url += "&OFFSET=" + offset.Value;
+            return await GetAsync<McpRegistryV2Result[]>(url, cancellationToken).ConfigureAwait(false);
+        }
+
+        public McpRegistryV2Result[] GetMcpRegistryV2(string? search = null, string? category = null, int? offset = null) =>
+            GetMcpRegistryV2Async(search, category, offset).GetAwaiter().GetResult();
+
         #endregion
 
         #region Recommendations API
