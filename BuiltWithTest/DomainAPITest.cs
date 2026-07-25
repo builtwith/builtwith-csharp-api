@@ -114,7 +114,7 @@ namespace BuiltWithTest
             var result = client.GetTrust("builtwith.com");
             Assert.IsNotNull(result);
             Assert.AreEqual("builtwith.com", result.Domain);
-            Assert.IsNotNull(result.DBRecord);
+            Assert.IsNotNull(result.Assessment);
         }
 
         [TestMethod]

@@ -276,7 +276,7 @@ namespace BuiltWith
         /// </summary>
         public async Task<TrustApiResponse> GetTrustAsync(string domain, CancellationToken cancellationToken = default)
         {
-            var url = BuildUrl("/trustv1/api.json", ("LOOKUP", domain));
+            var url = BuildUrl("/trustv2/api.json", ("LOOKUP", domain));
             return await GetAsync<TrustApiResponse>(url, cancellationToken).ConfigureAwait(false);
         }
 

@@ -130,7 +130,7 @@ Console.WriteLine($"{trends.Tech.Name}: {trends.Tech.Coverage.Live} live sites")
 
 ```csharp
 var trust = await client.GetTrustAsync("example.com");
-Console.WriteLine($"Spend: {trust.DBRecord?.Spend}, Parked: {trust.DBRecord?.Parked}");
+Console.WriteLine($"TrustLevel: {trust.Assessment?.TrustLevel}, Spend: {trust.BusinessProfile?.EstimatedMonthlySpendUSD}");
 ```
 
 ### VAT API
