@@ -50,6 +50,9 @@ namespace BuiltWith.Models
 
     public class DomainMeta
     {
+        [JsonPropertyName("company_reg")]
+        public DomainCompanyRegistration[] CompanyRegistrations { get; set; } = System.Array.Empty<DomainCompanyRegistration>();
+
         [JsonPropertyName("Majestic")]
         public long Majestic { get; set; }
 
@@ -93,6 +96,15 @@ namespace BuiltWith.Models
         public long QRank { get; set; }
     }
 
+    public class DomainCompanyRegistration
+    {
+        [JsonPropertyName("type")]
+        public string? Type { get; set; }
+
+        [JsonPropertyName("number")]
+        public string? Number { get; set; }
+    }
+
     public class DomainContact
     {
         [JsonPropertyName("Name")]
@@ -128,6 +140,10 @@ namespace BuiltWith.Models
 
     public class DomainTechnology
     {
+        /// <summary>API confidence from 0 to 1; null when absent in older responses.</summary>
+        [JsonPropertyName("confidence")]
+        public double? Confidence { get; set; }
+
         [JsonPropertyName("Categories")]
         public string[]? Categories { get; set; }
 

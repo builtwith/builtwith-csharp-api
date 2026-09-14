@@ -1,5 +1,9 @@
 # BuiltWith C# Client SDK
 
+## Domain API v25
+
+Domain lookups now use API v25. Technology records include numeric `confidence` scores from 0 to 1. Full JSON responses include `Meta.company_reg`, an array of company registration records with string `type` and `number` fields; registration numbers preserve leading zeros. The array is empty when unavailable or metadata is excluded. See the [API reference](https://api.builtwith.com/llms.txt). Typed properties are `DomainTechnology.Confidence` and `DomainMeta.CompanyRegistrations` (`Type`, `Number`).
+
 C# client SDK for the [BuiltWith API](https://api.builtwith.com). ![.NET](https://github.com/builtwith/BuiltWith-C-Client-API/workflows/.NET/badge.svg?branch=master)
 
 ## Getting Started
@@ -26,7 +30,7 @@ https://www.nuget.org/packages/BuiltWith/
 
 ## Supported Endpoints
 
-- [x] [Domain API](https://api.builtwith.com/domain-api) - Technology detection for domains (v23)
+- [x] [Domain API](https://api.builtwith.com/domain-api) - Technology detection for domains (v25)
 - [x] [Change API](https://api.builtwith.com/change-api) - Technology additions and removals
 - [x] [Free API](https://api.builtwith.com/free-api) - Free technology group summary
 - [x] [Lists API](https://api.builtwith.com/lists-api) - Find sites using a technology
