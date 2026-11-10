@@ -1,8 +1,14 @@
 # BuiltWith C# Client SDK
 
-## Domain API v25
+## Current API endpoints
 
-Domain lookups now use API v25. Technology records include numeric `confidence` scores from 0 to 1. Full JSON responses include `Meta.company_reg`, an array of company registration records with string `type` and `number` fields; registration numbers preserve leading zeros. The array is empty when unavailable or metadata is excluded. See the [API reference](https://api.builtwith.com/llms.txt). Typed properties are `DomainTechnology.Confidence` and `DomainMeta.CompanyRegistrations` (`Type`, `Number`).
+Uses Domain v26, Lists v13, Relationships v5, and MCP Registry v2 where supported. Existing unversioned registry methods now use v2; explicit v2 aliases remain available. Registry JSON is an array with per-endpoint tools and discovery `Overview` objects.
+
+Relationships requests return one page (up to 1000 records). Pass `next_page` as `PAGE` while `more_results` is true, keeping the lookup domain and IP option unchanged. `OFFSET` and `SKIP` are not supported. Bulk Domain retains its separate `/v23/domain/bulk` routes.
+
+## Domain API v26
+
+Domain lookups now use API v26. Technology records include numeric `confidence` scores from 0 to 1. Full JSON responses include `Meta.company_reg`, an array of company registration records with string `type` and `number` fields; registration numbers preserve leading zeros. The array is empty when unavailable or metadata is excluded. See the [API reference](https://api.builtwith.com/llms.txt). Typed properties are `DomainTechnology.Confidence` and `DomainMeta.CompanyRegistrations` (`Type`, `Number`).
 
 C# client SDK for the [BuiltWith API](https://api.builtwith.com). ![.NET](https://github.com/builtwith/BuiltWith-C-Client-API/workflows/.NET/badge.svg?branch=master)
 
@@ -30,7 +36,7 @@ https://www.nuget.org/packages/BuiltWith/
 
 ## Supported Endpoints
 
-- [x] [Domain API](https://api.builtwith.com/domain-api) - Technology detection for domains (v25)
+- [x] [Domain API](https://api.builtwith.com/domain-api) - Technology detection for domains (v26)
 - [x] [Change API](https://api.builtwith.com/change-api) - Technology additions and removals
 - [x] [Free API](https://api.builtwith.com/free-api) - Free technology group summary
 - [x] [Lists API](https://api.builtwith.com/lists-api) - Find sites using a technology
@@ -317,3 +323,5 @@ MIT
 ## Authors
 
 Gary Brewer
+
+Relationships paging: `await client.GetRelationshipsAsync("example.com", page: 2, ip: true)`; read `NextPage` and `MoreResults`. `GetMcpRegistry` retains its compatibility wrapper and exposes full v2 data in `Servers`; `GetMcpRegistryV2` returns the v2 array directly. Both preserve endpoint `Overview` objects.

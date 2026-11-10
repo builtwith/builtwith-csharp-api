@@ -4,6 +4,9 @@ namespace BuiltWith.Models
 {
     public class McpRegistryResponse
     {
+        /// <summary>Complete v2 records, including per-endpoint discovery overviews.</summary>
+        public McpRegistryV2Result[]? Servers { get; set; }
+
         [JsonPropertyName("Search")]
         public string? Search { get; set; }
 

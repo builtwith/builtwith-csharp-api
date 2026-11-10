@@ -16,6 +16,12 @@ namespace BuiltWith.Models
         [JsonPropertyName("max_per_page")]
         public int MaxPerPage { get; set; }
 
+        [JsonPropertyName("page")]
+        public int Page { get; set; }
+
+        [JsonPropertyName("next_page")]
+        public int NextPage { get; set; }
+
         [JsonPropertyName("next_skip")]
         public int NextSkip { get; set; }
 

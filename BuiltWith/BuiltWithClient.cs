@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -54,7 +55,7 @@ namespace BuiltWith
             _ownsHttpClient = false;
         }
 
-        #region Domain API (v25)
+        #region Domain API (v26)
 
         /// <summary>
         /// Look up technology information for a single domain.
@@ -62,7 +63,7 @@ namespace BuiltWith
         /// </summary>
         public async Task<DomainApiResponse> GetDomainAsync(string domain, CancellationToken cancellationToken = default)
         {
-            var url = BuildUrl("/v25/api.json", ("LOOKUP", domain));
+            var url = BuildUrl("/v26/api.json", ("LOOKUP", domain));
             return await GetAsync<DomainApiResponse>(url, cancellationToken).ConfigureAwait(false);
         }
 
@@ -76,7 +77,7 @@ namespace BuiltWith
             if (domains.Length > 16)
                 throw new BuiltWithException("Maximum 16 domains at a time.");
 
-            var url = BuildUrl("/v25/api.json", ("LOOKUP", string.Join(",", domains)));
+            var url = BuildUrl("/v26/api.json", ("LOOKUP", string.Join(",", domains)));
             return await GetAsync<DomainApiResponse>(url, cancellationToken).ConfigureAwait(false);
         }
 
@@ -155,7 +156,7 @@ namespace BuiltWith
         /// </summary>
         public async Task<ListsApiResponse> GetListsAsync(string tech, string? offset = null, CancellationToken cancellationToken = default, string? otherTechs = null, IDictionary<string, string>? filters = null)
         {
-            var url = BuildUrl("/lists12/api.json", ("TECH", tech), ("OTHERTECHS", otherTechs ?? ""), ("OFFSET", offset ?? ""));
+            var url = BuildUrl("/lists13/api.json", ("TECH", tech), ("OTHERTECHS", otherTechs ?? ""), ("OFFSET", offset ?? ""));
             url = AddQueryParams(url, filters);
             return await GetAsync<ListsApiResponse>(url, cancellationToken).ConfigureAwait(false);
         }
@@ -171,14 +172,21 @@ namespace BuiltWith
         /// Discover relationships between domains via shared identifiers.
         /// https://api.builtwith.com/relationships-api
         /// </summary>
-        public async Task<RelationshipsApiResponse> GetRelationshipsAsync(string domain, CancellationToken cancellationToken = default)
+        public Task<RelationshipsApiResponse> GetRelationshipsAsync(string domain, CancellationToken cancellationToken = default) =>
+            GetRelationshipsAsync(domain, 1, false, cancellationToken);
+
+        public async Task<RelationshipsApiResponse> GetRelationshipsAsync(string domain, int page, bool ip = false, CancellationToken cancellationToken = default)
         {
-            var url = BuildUrl("/rv4/api.json", ("LOOKUP", domain));
+            if (page < 1) throw new ArgumentOutOfRangeException(nameof(page));
+            var url = BuildUrl("/rv5/api.json", ("LOOKUP", domain), ("PAGE", page.ToString()), ("IP", ip ? "yes" : ""));
             return await GetAsync<RelationshipsApiResponse>(url, cancellationToken).ConfigureAwait(false);
         }
 
         public RelationshipsApiResponse GetRelationships(string domain) =>
             GetRelationshipsAsync(domain).GetAwaiter().GetResult();
+
+        public RelationshipsApiResponse GetRelationships(string domain, int page, bool ip = false) =>
+            GetRelationshipsAsync(domain, page, ip).GetAwaiter().GetResult();
 
         #endregion
 
@@ -324,10 +332,22 @@ namespace BuiltWith
         /// </summary>
         public async Task<McpRegistryResponse> GetMcpRegistryAsync(string? search = null, string? category = null, int? offset = null, CancellationToken cancellationToken = default)
         {
-            var url = BuildUrl("/mcp1/api.json", ("SEARCH", search ?? ""), ("CATEGORY", category ?? ""));
+            var url = BuildUrl("/mcp2/api.json", ("SEARCH", search ?? ""), ("CATEGORY", category ?? ""));
             if (offset.HasValue)
                 url += "&OFFSET=" + offset.Value;
-            return await GetAsync<McpRegistryResponse>(url, cancellationToken).ConfigureAwait(false);
+            var records = await GetAsync<McpRegistryV2Result[]>(url, cancellationToken).ConfigureAwait(false);
+            return new McpRegistryResponse
+            {
+                Search = search,
+                Servers = records,
+                Results = records.Select(record => new McpRegistryResult
+                {
+                    Domain = record.Domain, Category = record.Category, Description = record.Description,
+                    Endpoints = record.Endpoints?.Select(endpoint => endpoint.Endpoint ?? "").ToArray(),
+                    Tools = record.Endpoints?.SelectMany(endpoint => endpoint.Tools ?? Array.Empty<McpRegistryV2Tool>())
+                        .Select(tool => new McpRegistryTool { Name = tool.Name, Description = tool.Description }).ToArray()
+                }).ToArray()
+            };
         }
 
         public McpRegistryResponse GetMcpRegistry(string? search = null, string? category = null, int? offset = null) =>

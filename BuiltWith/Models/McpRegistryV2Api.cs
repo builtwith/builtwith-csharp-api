@@ -25,6 +25,9 @@ namespace BuiltWith.Models
 
     public class McpRegistryV2Endpoint
     {
+        [JsonPropertyName("Overview")]
+        public System.Text.Json.JsonElement? Overview { get; set; }
+
         [JsonPropertyName("Endpoint")]
         public string? Endpoint { get; set; }
 
